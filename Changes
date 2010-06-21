@@ -1,5 +1,9 @@
 Revision history for AnyEvent::DBus
 
+0.3  Mon Jun 21 11:51:07 CEST 2010
+	- fix documentation and add AnyEvent dependency
+          (found by Sahil Tandon).
+
 0.1  Mon Jun 21 02:13:33 CEST 2010
 	- first version, almost completely untested.
 

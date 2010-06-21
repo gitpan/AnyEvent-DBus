@@ -1,12 +1,23 @@
 =head1 NAME
 
-AnyEvent::AIO - truly asynchronous file and directory I/O
+AnyEvent::DBus - adapt Net::DBus to AnyEvent
 
 =head1 SYNOPSIS
 
    use AnyEvent::DBus;
 
-   # now use the Net::DBus API, preferably the non-blocking variants
+   # now use the Net::DBus API, preferably the non-blocking variants:
+
+   use Net::DBus::Annotation qw(:call);
+
+   $bus->get_object (...)
+       ->Method (dbus_call_async, $arg1, ...)
+       ->set_notify (sub {
+          my @data = $_[0]->get_result
+          ...
+       });
+
+   $bus->get_connection->send (...);
 
 =head1 DESCRIPTION
 
@@ -80,7 +91,7 @@ use AnyEvent ();
 use Net::DBus ();
 use Net::DBus::Binding::Watch ();
 
-our $VERSION = '0.1';
+our $VERSION = '0.3';
 
 # yup, Net::DBus checks by using exists on %INC...
 $INC{'Net/DBus/Reactor.pm'} = undef;

@@ -10,6 +10,7 @@ my $mm = MM->new({
     VERSION_FROM => "DBus.pm",
     PREREQ_PM    => {
        common::sense => 3.2,
+       AnyEvent      => 5,
        Net::DBus     => 0.33,
     },
 });
