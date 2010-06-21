@@ -1,0 +1,7 @@
+Revision history for AnyEvent::DBus
+
+0.1  Mon Jun 21 02:13:33 CEST 2010
+	- first version, almost completely untested.
+
+0.0  Mon Jun 21 00:03:22 CEST 2010
+	- original version, an AnyEvent::AIO clone.
