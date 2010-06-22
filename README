@@ -29,14 +29,15 @@ DESCRIPTION
     Note that a) a lot inside Net::DBus is still blocking b) if you call a
     method that blocks, you again block your process (basically anything but
     calls to the Net::DBus::Binding::Connection objects block, but see
-    Net::DBus::Annoation, specifically dbus_call_async) and c) this module
-    only implements the minimum API required to make Net::DBus work -
-    Net::DBus unfortunately has no nice hooking API.
+    Net::DBus::Annoation, specifically dbus_call_async) c) the underlying
+    libdbus is often blocking itself, even with infinite timeouts and d)
+    this module only implements the minimum API required to make Net::DBus
+    work - Net::DBus unfortunately has no nice hooking API.
 
     However, unlike Net::DBus::Reactor, this module should be fully
     non-blocking as long as you only use non-blocking APIs
     (Net::DBus::Reactor blocks on writes). It should also be faster, but
-    Net::DBus is such a morass os unneeded method calls that speed won't
+    Net::DBus is such a morass so unneeded method calls that speed won't
     matter much...
 
   EXAMPLE

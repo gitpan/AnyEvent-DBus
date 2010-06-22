@@ -1,5 +1,10 @@
 Revision history for AnyEvent::DBus
 
+0.31 Tue Jun 22 11:08:54 CEST 2010
+        - "... you have to be sure to dispatch ... especially if
+          dbus_watch_handle() or dbus_timeout_handle() were called"
+          - so we do!
+
 0.3  Mon Jun 21 11:51:07 CEST 2010
 	- fix documentation and add AnyEvent dependency
           (found by Sahil Tandon).

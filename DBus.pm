@@ -31,15 +31,16 @@ loading this module will automatically be managed by this module.
 
 Note that a) a lot inside Net::DBus is still blocking b) if you call a
 method that blocks, you again block your process (basically anything
-but calls to the Net::DBus::Binding::Connection objects block, but
-see Net::DBus::Annoation, specifically dbus_call_async) and c) this
+but calls to the Net::DBus::Binding::Connection objects block, but see
+Net::DBus::Annoation, specifically dbus_call_async) c) the underlying
+libdbus is often blocking itself, even with infinite timeouts and d) this
 module only implements the minimum API required to make Net::DBus work -
 Net::DBus unfortunately has no nice hooking API.
 
 However, unlike L<Net::DBus::Reactor>, this module should be fully
 non-blocking as long as you only use non-blocking APIs (Net::DBus::Reactor
 blocks on writes). It should also be faster, but Net::DBus is such a
-morass os unneeded method calls that speed won't matter much...
+morass so unneeded method calls that speed won't matter much...
 
 =head2 EXAMPLE
 
@@ -91,7 +92,7 @@ use AnyEvent ();
 use Net::DBus ();
 use Net::DBus::Binding::Watch ();
 
-our $VERSION = '0.3';
+our $VERSION = '0.31';
 
 # yup, Net::DBus checks by using exists on %INC...
 $INC{'Net/DBus/Reactor.pm'} = undef;
@@ -118,14 +119,14 @@ sub io_toggle {
       and
          $O{$id}[0] = $on && AE::io $fd, 0, sub {
             $w->handle (Net::DBus::Binding::Watch::READABLE ());
-            $con->dispatch; # wtf., we tell it data is ready, but have to call dispatch ourselves???
+            $con->dispatch;
          };
 
    $f & Net::DBus::Binding::Watch::WRITABLE ()
       and
          $O{$id}[1] = $on && AE::io $fd, 1, sub {
             $w->handle (Net::DBus::Binding::Watch::WRITABLE ());
-            # calling flush, as NEt::DBus::Reactor does, is blocking :/
+            $con->dispatch;
          };
 }
 
@@ -144,7 +145,10 @@ sub timeout_toggle {
    my $id = $w->get_data;
    my $i  = $w->get_interval * 0.001;
 
-   $O{$id} = $w->is_enabled && AE::timer $i, $i, sub { $w->handle };
+   $O{$id} = $w->is_enabled && AE::timer $i, $i, sub {
+      $w->handle;
+      $con->dispatch;
+   };
 }
 
 sub timeout_on {
@@ -163,6 +167,8 @@ sub manage {
 
    $con->set_timeout_callbacks (\&timeout_on, \&watch_off, \&timeout_toggle);
 #      if $con->can ("set_timeout_callbacks");
+
+   $con->dispatch; # for good measure
 }
 
 =head1 SEE ALSO
